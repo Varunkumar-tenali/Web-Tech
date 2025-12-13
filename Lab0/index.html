@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VIT-AP University</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f5f5;
+        }
+
+        .top-bar {
+            background: #8b1538;
+            color: white;
+            padding: 10px 0;
+            font-size: 14px;
+        }
+
+        .top-bar-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .campus-info {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .top-links {
+            display: flex;
+            gap: 30px;
+        }
+
+        .top-links a {
+            color: white;
+            text-decoration: none;
+            transition: opacity 0.3s;
+        }
+
+        .top-links a:hover {
+            opacity: 0.8;
+        }
+
+        header {
+            background: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo {
+            width: 80px;
+            height: 80px;
+            background: #8b1538;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: white;
+            font-size: 24px;
+        }
+
+        .logo-text h1 {
+            color: #8b1538;
+            font-size: 28px;
+            margin-bottom: 5px;
+        }
+
+        .logo-text p {
+            color: #666;
+            font-size: 12px;
+        }
+
+        nav {
+            display: flex;
+            gap: 35px;
+        }
+
+        nav a {
+            color: #333;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 16px;
+            transition: color 0.3s;
+        }
+
+        nav a:hover {
+            color: #8b1538;
+        }
+
+        .hero {
+            background: linear-gradient(135deg, #8b1538 0%, #5a0e24 100%);
+            color: white;
+            padding: 60px 40px;
+            text-align: center;
+        }
+
+        .hero-content {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .hero h2 {
+            font-size: 32px;
+            margin-bottom: 20px;
+            line-height: 1.4;
+        }
+
+        .register-hero-btn {
+            background: white;
+            color: #8b1538;
+            padding: 15px 40px;
+            border: none;
+            border-radius: 50px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 30px;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+        }
+
+        .register-hero-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+        }
+
+        .schools-section {
+            padding: 80px 40px;
+            background: white;
+        }
+
+        .schools-container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .schools-intro {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .schools-intro h3 {
+            font-size: 36px;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .schools-intro p {
+            font-size: 18px;
+            color: #666;
+            line-height: 1.8;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .schools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .school-card {
+            position: relative;
+            height: 350px;
+            border-radius: 15px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: transform 0.3s;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+        }
+
+        .school-card:hover {
+            transform: translateY(-10px);
+        }
+
+        .school-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.7) 100%);
+            z-index: 1;
+        }
+
+        .school-card-content {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 30px;
+            color: white;
+            z-index: 2;
+        }
+
+        .school-card h4 {
+            font-size: 24px;
+            margin-bottom: 15px;
+        }
+
+        .explore-btn {
+            color: white;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 500;
+            transition: gap 0.3s;
+        }
+
+        .explore-btn:hover {
+            gap: 12px;
+        }
+
+        .school-1 { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+        .school-2 { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); }
+        .school-3 { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); }
+        .school-4 { background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); }
+        .school-5 { background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); }
+        .school-6 { background: linear-gradient(135deg, #30cfd0 0%, #330867 100%); }
+        .school-7 { background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%); }
+
+        footer {
+            background: #2c2c2c;
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+
+        footer p {
+            color: #ccc;
+        }
+
+        .scroll-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 50px;
+            height: 50px;
+            background: #8b1538;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+            transition: all 0.3s;
+        }
+
+        .scroll-top:hover {
+            background: #5a0e24;
+            transform: translateY(-5px);
+        }
+
+        @media (max-width: 768px) {
+            nav {
+                display: none;
+            }
+
+            .schools-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .hero h2 {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+    <div class="header-content">
+        <div class="logo-section">
+            <a href="https://vitap.ac.in/" target="_blank">
+                <img src="images/vitap.png"
+                     alt="VIT-AP University Logo"
+                     style="height: 90px; width: auto;">
+           </a>
+        </div>
+
+        <nav>
+            <a href="#">About</a>
+            <a href="#">Admissions</a>
+            <a href="#">Academics</a>
+            <a href="#">Career Development Center</a>
+            <a href="#">Research</a>
+            <a href="#">Campus Life</a>
+        </nav>
+    </div>
+</header>
+
+    <section class="hero">
+        <div class="hero-content">
+            <h2>Welcome to VIT-AP University - Amaravati</h2>
+            <p>Join us in shaping the future of technology, engineering, and innovation. Be part of a premier institution dedicated to excellence in education and research.</p>
+            <a href="registration.html" class="register-hero-btn">Register Now</a>
+        </div>
+    </section>
+
+    <section class="schools-section">
+        <div class="schools-container">
+            <div class="schools-intro">
+                <h3>Seven Schools of Excellence</h3>
+                <p>At VIT-AP the entire teaching-learning process is concentrated around seven schools for preparing students to make meaningful contributions to society as engaged citizens and leaders in a complex world.</p>
+            </div>
+
+            <div class="schools-grid">
+                <div class="school-card school-1">
+                    <div class="school-card-content">
+                        <h4>School of Computer Science and Engineering</h4>
+                        <a href="#" class="explore-btn">Explore Now →</a>
+                    </div>
+                </div>
+
+                <div class="school-card school-2">
+                    <div class="school-card-content">
+                        <h4>School of Electronics Engineering</h4>
+                        <a href="#" class="explore-btn">Explore Now →</a>
+                    </div>
+                </div>
+
+                <div class="school-card school-3">
+                    <div class="school-card-content">
+                        <h4>School of Mechanical Engineering</h4>
+                        <a href="#" class="explore-btn">Explore Now →</a>
+                    </div>
+                </div>
+
+                <div class="school-card school-4">
+                    <div class="school-card-content">
+                        <h4>School of Advanced Sciences</h4>
+                        <a href="#" class="explore-btn">Explore Now →</a>
+                    </div>
+                </div>
+
+                <div class="school-card school-5">
+                    <div class="school-card-content">
+                        <h4>School of Social Sciences and Humanities</h4>
+                        <a href="#" class="explore-btn">Explore Now →</a>
+                    </div>
+                </div>
+
+                <div class="school-card school-6">
+                    <div class="school-card-content">
+                        <h4>School of Law</h4>
+                        <a href="#" class="explore-btn">Explore Now →</a>
+                    </div>
+                </div>
+
+                <div class="school-card school-7">
+                    <div class="school-card-content">
+                        <h4>School of Business</h4>
+                        <a href="#" class="explore-btn">Explore Now →</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <p>&copy; 2024 VIT-AP University. All rights reserved.</p>
+        <p>Amaravati, Andhra Pradesh, India</p>
+    </footer>
+
+    <button class="scroll-top" id="scrollTop">↑</button>
+
+    <script>
+        const scrollTopBtn = document.getElementById('scrollTop');
+
+        window.addEventListener('scroll', () => {
+            if (window.pageYOffset > 300) {
+                scrollTopBtn.style.display = 'flex';
+            } else {
+                scrollTopBtn.style.display = 'none';
+            }
+        });
+
+        scrollTopBtn.addEventListener('click', () => {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+    </script>
+</body>
+</html>
