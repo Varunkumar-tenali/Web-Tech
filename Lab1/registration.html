@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exercise 3: Registration</title>
+    <style>
+        :root {
+            --bg-body: #050505;
+            --bg-card: #141414;
+            --border-color: #333;
+            --text-main: #ffffff;
+            --text-muted: #888;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-body);
+            background-image: radial-gradient(circle at 50% 0%, #1f1f1f 0%, #050505 70%);
+            min-height: 100vh;
+            padding: 4rem 2rem;
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+        }
+
+        .container { max-width: 600px; width: 100%; }
+
+        .header { margin-bottom: 2rem; text-align: center; }
+        .header h1 { font-size: 2.2rem; font-weight: 800; letter-spacing: -0.03em; }
+        .header p { color: var(--text-muted); }
+
+        form {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            padding: 2.5rem;
+            border-radius: 20px;
+        }
+
+        .form-group { margin-bottom: 1.5rem; }
+        
+        label { display: block; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.5rem; }
+
+        input {
+            width: 100%;
+            background: #0a0a0a;
+            border: 1px solid var(--border-color);
+            color: white;
+            padding: 1rem;
+            border-radius: 8px;
+            font-family: inherit;
+        }
+        input:focus { outline: none; border-color: #fff; }
+
+        /* Custom File Input Styling */
+        input[type="file"] { padding: 0.8rem; background: #111; font-size: 0.9rem; }
+        input[type="file"]::file-selector-button {
+            background: #333; color: white; border: none; padding: 0.5rem 1rem;
+            border-radius: 4px; margin-right: 1rem; cursor: pointer;
+        }
+
+        /* Checkbox styling */
+        .checkbox-group { display: flex; align-items: center; gap: 0.8rem; }
+        input[type="checkbox"] { width: 1.2rem; height: 1.2rem; accent-color: white; }
+        .checkbox-group label { margin-bottom: 0; color: var(--text-main); }
+
+        .submit-btn {
+            width: 100%; padding: 1rem; margin-top: 1rem;
+            background: #fff; color: #000; font-weight: 700;
+            border: none; border-radius: 8px; cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .submit-btn:hover { transform: translateY(-2px); }
+
+        .back-btn { display: block; text-align: center; margin-top: 2rem; color: var(--text-muted); text-decoration: none; }
+        .back-btn:hover { color: #fff; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Create Account</h1>
+            <p>Exercise 3: Advanced Form Controls</p>
+        </div>
+
+        <form onsubmit="event.preventDefault(); alert('Registered!');">
+            <div class="form-group">
+                <label>Full Name</label>
+                <input type="text" required>
+            </div>
+            <div class="form-group">
+                <label>Email Address</label>
+                <input type="email" required>
+            </div>
+            <div class="form-group">
+                <label>Date of Birth</label>
+                <input type="date" style="color-scheme: dark;" required>
+            </div>
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" required>
+            </div>
+            <div class="form-group">
+                <label>Profile Picture</label>
+                <input type="file" accept="image/*">
+            </div>
+            <div class="form-group checkbox-group">
+                <input type="checkbox" id="terms" required>
+                <label for="terms">I accept the Terms & Conditions</label>
+            </div>
+            <button class="submit-btn">Register Account</button>
+        </form>
+        <a href="#" class="back-btn" onclick="window.history.back()">← Back to Home</a>
+    </div>
+</body>
+</html>

@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exercise 2: Contact Form</title>
+    <style>
+        :root {
+            --bg-body: #050505;
+            --bg-card: #141414;
+            --border-color: #333;
+            --text-main: #ffffff;
+            --text-muted: #888;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-body);
+            background-image: radial-gradient(circle at 50% 0%, #1f1f1f 0%, #050505 70%);
+            min-height: 100vh;
+            padding: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-main);
+        }
+
+        .container {
+            max-width: 500px;
+            width: 100%;
+            animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .header { margin-bottom: 2rem; text-align: center; }
+        .header h1 { font-size: 2rem; font-weight: 800; letter-spacing: -0.03em; margin-bottom: 0.5rem; }
+        .header p { color: var(--text-muted); font-size: 0.95rem; }
+
+        form {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            padding: 2rem;
+            border-radius: 16px;
+            box-shadow: 0 20px 40px -10px rgba(0,0,0,0.5);
+        }
+
+        label {
+            display: block;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        input, textarea {
+            width: 100%;
+            background: #0a0a0a;
+            border: 1px solid var(--border-color);
+            color: white;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            font-family: inherit;
+            transition: all 0.2s;
+        }
+
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: #fff;
+            background: #000;
+        }
+
+        input[type="submit"] {
+            background: #fff;
+            color: #000;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            margin-bottom: 0;
+        }
+
+        input[type="submit"]:hover { background: #e0e0e0; transform: translateY(-2px); }
+
+        .back-btn {
+            display: block;
+            text-align: center;
+            margin-top: 2rem;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+        .back-btn:hover { color: #fff; }
+
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Contact Us</h1>
+            <p>Exercise 2: Basic Input Controls</p>
+        </div>
+        <form id="contactForm">
+            <label for="name">Name</label>
+            <input type="text" id="name" placeholder="Enter your full name" required>
+
+            <label for="email">Email</label>
+            <input type="email" id="email" placeholder="name@example.com" required>
+
+            <label for="message">Message</label>
+            <textarea id="message" rows="4" placeholder="How can we help?" required></textarea>
+
+            <input type="submit" value="Send Message">
+        </form>
+        <a href="#" class="back-btn" onclick="goBack()">← Back to Home</a>
+    </div>
+    <script>
+        document.getElementById('contactForm').addEventListener('submit', e => {
+            e.preventDefault();
+            alert('Message Sent (Simulated)');
+        });
+        function goBack() { window.history.back(); }
+    </script>
+</body>
+</html>

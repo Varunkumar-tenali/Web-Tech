@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exercise 1: Student Marksheet</title>
+    <style>
+        :root {
+            --bg-body: #050505;
+            --bg-card: #141414;
+            --border-color: #333;
+            --text-main: #ffffff;
+            --text-muted: #888;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background-color: var(--bg-body);
+            background-image: radial-gradient(circle at 50% 0%, #1f1f1f 0%, #050505 70%);
+            min-height: 100vh;
+            padding: 2rem;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .container {
+            max-width: 1000px;
+            width: 100%;
+            animation: fadeIn 0.8s ease;
+        }
+
+        .header { margin-bottom: 2rem; }
+        .header h1 { font-size: 2.5rem; font-weight: 800; letter-spacing: -0.05em; margin-bottom: 0.5rem; }
+        .header p { color: var(--text-muted); }
+
+        /* Modern Table Styling */
+        .table-wrapper {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 20px 40px -10px rgba(0,0,0,0.5);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        thead {
+            background: #0a0a0a;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        th {
+            padding: 1.5rem;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        td {
+            padding: 1.5rem;
+            border-bottom: 1px solid #222;
+            color: var(--text-main);
+        }
+
+        tbody tr:last-child td { border-bottom: none; }
+        tbody tr:hover { background: #1a1a1a; }
+
+        /* Highlight the ID and Total columns */
+        td:first-child { font-family: 'Courier New', monospace; color: var(--text-muted); }
+        td:last-child { font-weight: 700; color: #fff; }
+
+        .back-btn {
+            display: inline-block;
+            margin-top: 2rem;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.3s;
+        }
+        .back-btn:hover { color: #fff; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Student Marksheet</h1>
+            <p>Exercise 1: Data Table Structure</p>
+        </div>
+
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Student Name</th>
+                        <th>Physics</th>
+                        <th>Chemistry</th>
+                        <th>Maths</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>101</td><td>Varun Kumar</td><td>85</td><td>92</td><td>88</td><td>265</td></tr>
+                    <tr><td>102</td><td>Pavan Sai</td><td>90</td><td>87</td><td>93</td><td>270</td></tr>
+                    <tr><td>103</td><td>Narasimha</td><td>78</td><td>82</td><td>80</td><td>240</td></tr>
+                    <tr><td>104</td><td>Siva Kumar</td><td>95</td><td>91</td><td>94</td><td>280</td></tr>
+                    <tr><td>105</td><td>Navadeep</td><td>88</td><td>85</td><td>90</td><td>263</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <a href="#" class="back-btn" onclick="goBack()">← Back to Home</a>
+    </div>
+    <script>function goBack() { window.history.back(); }</script>
+</body>
+</html>

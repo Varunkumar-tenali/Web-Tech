@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exercise 4: Product Showcase</title>
+    <style>
+        :root {
+            --bg-body: #050505;
+            --bg-card: #141414;
+            --border-color: #333;
+            --text-main: #ffffff;
+            --text-muted: #888;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background-color: var(--bg-body);
+            background-image: radial-gradient(circle at 50% 0%, #1f1f1f 0%, #050505 70%);
+            min-height: 100vh;
+            padding: 4rem 2rem;
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+        }
+
+        .container { max-width: 1200px; width: 100%; }
+
+        .header { text-align: center; margin-bottom: 4rem; }
+        .header h1 { font-size: 2.5rem; font-weight: 800; letter-spacing: -0.05em; margin-bottom: 0.5rem; }
+        .header p { color: var(--text-muted); }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+            gap: 2rem;
+            margin-bottom: 4rem;
+        }
+
+        .product-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 24px;
+            padding: 2rem;
+            transition: all 0.4s ease;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .product-card:hover {
+            transform: translateY(-8px);
+            border-color: #666;
+            box-shadow: 0 20px 40px -10px rgba(0,0,0,0.7);
+        }
+
+        .product-image {
+            width: 100%;
+            height: 220px;
+            background: #0a0a0a;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 5rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid #222;
+        }
+
+        .product-title { font-size: 1.8rem; font-weight: 700; margin-bottom: 0.5rem; letter-spacing: -0.03em; }
+        
+        .product-description {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+            flex-grow: 1;
+        }
+
+        .product-features { list-style: none; margin-bottom: 2rem; border-top: 1px solid #222; padding-top: 1rem; }
+        
+        .product-features li {
+            color: #ccc;
+            padding: 0.4rem 0;
+            padding-left: 1.5rem;
+            position: relative;
+            font-size: 0.9rem;
+        }
+
+        .product-features li:before {
+            content: "•";
+            position: absolute;
+            left: 0;
+            color: #fff;
+            font-weight: bold;
+        }
+
+        .price-container {
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: baseline;
+            gap: 0.8rem;
+        }
+
+        .product-price { font-size: 1.8rem; font-weight: 700; color: #fff; }
+        .original-price { font-size: 1rem; color: #555; text-decoration: line-through; }
+
+        .buy-btn {
+            background: #fff;
+            color: #000;
+            padding: 1rem;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.2s ease;
+        }
+
+        .buy-btn:hover { background: #e0e0e0; transform: scale(1.02); }
+        .buy-btn:active { transform: scale(0.98); }
+
+        .back-btn {
+            display: block;
+            text-align: center;
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        .back-btn:hover { color: #fff; }
+
+        /* Notification Toast */
+        .notification {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: #1a1a1a;
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            border: 1px solid #333;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 100;
+        }
+
+        .notification.show { transform: translateY(0); opacity: 1; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Product Showcase</h1>
+            <p>Exercise 4: E-Commerce Cards</p>
+        </div>
+
+        <div class="products-grid">
+            <div class="product-card">
+                <div class="product-image">📱</div>
+                <h3 class="product-title">iPhone 17 Pro</h3>
+                <p class="product-description">Forged in titanium. Featuring the all-new A19 Pro chip and a stunning under-display Face ID experience.</p>
+                <ul class="product-features">
+                    <li>A19 Pro Bionic Chip</li>
+                    <li>ProMotion XDR Display</li>
+                    <li>Titanium Design</li>
+                </ul>
+                <div class="price-container">
+                    <span class="product-price">₹1,29,900</span>
+                    <span class="original-price">₹1,34,900</span>
+                </div>
+                <button class="buy-btn" onclick="handleBuy('iPhone 17 Pro')">Pre-order Now</button>
+            </div>
+
+            <div class="product-card">
+                <div class="product-image">💻</div>
+                <h3 class="product-title">MacBook Air (M4)</h3>
+                <p class="product-description">Strikingly thin and fast. The world’s most popular laptop is now supercharged by the M4 chip.</p>
+                <ul class="product-features">
+                    <li>Apple M4 10-core Chip</li>
+                    <li>24-Hour Battery Life</li>
+                    <li>Liquid Retina Display</li>
+                </ul>
+                <div class="price-container">
+                    <span class="product-price">₹1,14,900</span>
+                    <span class="original-price">₹1,19,900</span>
+                </div>
+                <button class="buy-btn" onclick="handleBuy('MacBook Air M4')">Buy Now</button>
+            </div>
+
+            <div class="product-card">
+                <div class="product-image">🎧</div>
+                <h3 class="product-title">AirPods Pro Gen 3</h3>
+                <p class="product-description">Magic you’ve never heard before. Adaptive Audio and Active Noise Cancellation.</p>
+                <ul class="product-features">
+                    <li>H3 Chip Integration</li>
+                    <li>Lossless Audio</li>
+                    <li>Precision Finding Case</li>
+                </ul>
+                <div class="price-container">
+                    <span class="product-price">₹24,900</span>
+                    <span class="original-price">₹26,900</span>
+                </div>
+                <button class="buy-btn" onclick="handleBuy('AirPods Pro 3')">Buy Now</button>
+            </div>
+        </div>
+
+        <a href="#" class="back-btn" onclick="goBack()">← Back to Home</a>
+    </div>
+
+    <div id="notification" class="notification">
+        <span>🛍️</span>
+        <span id="notif-text">Product added to cart</span>
+    </div>
+
+    <script>
+        function handleBuy(productName) {
+            const notification = document.getElementById('notification');
+            const text = document.getElementById('notif-text');
+            
+            text.textContent = `${productName} added to cart`;
+            notification.classList.add('show');
+
+            // Hide after 3 seconds
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+
+            console.log(`Product purchased: ${productName}`);
+        }
+
+        function goBack() {
+            window.history.back();
+        }
+    </script>
+</body>
+</html>
