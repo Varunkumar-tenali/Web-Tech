@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exercise 3: Drag & Drop Task Manager</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #20c9bb;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .controls {
+            margin-bottom: 25px;
+            text-align: center;
+        }
+        input[type="text"] {
+            padding: 10px;
+            width: 300px;
+            border: 1px solid #ffffff;
+            border-radius: 4px;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #1d7fc1;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #072840;
+        }
+
+        #statusMessage {
+            text-align: center;
+            height: 20px;
+            color: green;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .board {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+        }
+
+        .column {
+            background-color: #ffffff;
+            border-radius: 8px;
+            width: 300px;
+            min-height: 400px;
+            padding: 15px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .column h3 {
+            text-align: center;
+            margin-top: 0;
+            border-bottom: 2px solid #f0f0f0;
+            padding-bottom: 10px;
+        }
+
+        .task {
+            background-color: white;
+            border: 1px solid #ddd;
+            border-left: 5px solid #3498db;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 4px;
+            cursor: grab;
+            box-shadow: 0 2px 3px rgba(0,0,0,0.05);
+            transition: transform 0.2s, background-color 0.3s;
+        }
+        .task:active {
+            cursor: grabbing;
+        }
+        .task small {
+            display: block;
+            color: #888;
+            margin-top: 5px;
+            font-size: 0.8em;
+        }
+
+        .task.completed {
+            background-color: #d4edda;
+            border-left-color: #28a745;
+            text-decoration: line-through;
+            color: #155724;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="controls">
+        <input type="text" id="taskInput" placeholder="Enter task name...">
+        <button onclick="addTask()">Add Task</button>
+    </div>
+
+    <div id="statusMessage"></div>
+
+    <div class="board">
+        <div class="column" id="todo" ondrop="drop(event)" ondragover="allowDrop(event)">
+            <h3>To Do</h3>
+        </div>
+
+        <div class="column" id="inprogress" ondrop="drop(event)" ondragover="allowDrop(event)">
+            <h3>In Progress</h3>
+        </div>
+
+        <div class="column" id="completed" ondrop="drop(event)" ondragover="allowDrop(event)">
+            <h3>Completed</h3>
+        </div>
+    </div>
+
+    <script>
+        let draggedItem = null;
+
+        function addTask() {
+            const input = document.getElementById('taskInput');
+            const taskName = input.value;
+
+            if (taskName === '') {
+                alert("Please enter a task name!");
+                return;
+            }
+
+            const taskCard = document.createElement('div');
+            taskCard.className = 'task';
+            taskCard.draggable = true;
+            taskCard.id = 'task-' + Date.now();
+
+            const dateStr = new Date().toLocaleDateString();
+            taskCard.innerHTML = `<strong>${taskName}</strong><small>${dateStr}</small>`;
+
+            taskCard.addEventListener('dragstart', function(e) {
+                draggedItem = this;
+                e.dataTransfer.effectAllowed = "move";
+                e.dataTransfer.setData('text/html', this.innerHTML); 
+                setTimeout(() => this.style.opacity = '0.5', 0);
+            });
+
+            taskCard.addEventListener('dragend', function() {
+                this.style.opacity = '1';
+                draggedItem = null;
+            });
+
+            document.getElementById('todo').appendChild(taskCard);
+            
+            input.value = '';
+        }
+
+        function allowDrop(e) {
+            e.preventDefault();
+        }
+
+        function drop(e) {
+            e.preventDefault();
+            
+            const column = e.target.closest('.column');
+            
+            if (column && draggedItem) {
+                column.appendChild(draggedItem);
+
+                if (column.id === 'completed') {
+                    draggedItem.classList.add('completed');
+                    showMessage("Task Completed Successfully!");
+                } else {
+                    draggedItem.classList.remove('completed');
+                    clearMessage();
+                }
+            }
+        }
+
+        function showMessage(msg) {
+            const msgBox = document.getElementById('statusMessage');
+            msgBox.textContent = msg;
+            setTimeout(() => {
+                msgBox.textContent = '';
+            }, 3000);
+        }
+
+        function clearMessage() {
+            document.getElementById('statusMessage').textContent = '';
+        }
+    </script>
+</body>
+</html>
