@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Adaptive Registration System</title>
+    <style>
+        :root {
+            --bg-color: #f1f5f9;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border: #cbd5e1;
+            --primary: #334155;
+            --primary-hover: #0f172a;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            background: var(--card-bg);
+            width: 400px;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        header h2 {
+            margin-bottom: 0.5rem;
+            color: var(--primary);
+        }
+
+        header p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-top: 0;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.2rem;
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-bottom: 0.4rem;
+            color: var(--primary);
+        }
+
+        input, select {
+            padding: 10px;
+            border: 2px solid var(--border);
+            border-radius: 6px;
+            font-size: 1rem;
+            background: #f8fafc;
+            color: var(--text-main);
+            transition: all 0.3s;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: #fff;
+        }
+
+        input.valid {
+            border-color: #334155;
+            background-color: #e2e8f0;
+        }
+
+        input.invalid {
+            border-color: #0f172a;
+            border-style: dashed;
+        }
+
+        .error-msg {
+            font-size: 0.8rem;
+            color: #0f172a;
+            font-weight: bold;
+            height: 15px;
+            margin-top: 4px;
+        }
+
+        .hint {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 1rem;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background-color 0.3s;
+            margin-top: 10px;
+        }
+
+        button:hover:not(:disabled) {
+            background-color: var(--primary-hover);
+        }
+
+        button:disabled {
+            background-color: var(--border);
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h2>User Registration</h2>
+        <p>Dynamic Role-Based Validation</p>
+    </header>
+
+    <form id="regForm" novalidate>
+        <div class="form-group">
+            <label for="role">Select Role</label>
+            <select id="role" name="role" required>
+                <option value="" disabled selected>-- Choose a Role --</option>
+                <option value="student">Student</option>
+                <option value="teacher">Teacher</option>
+                <option value="admin">Administrator</option>
+            </select>
+            <small class="hint" id="roleHint">Select a role to see requirements.</small>
+        </div>
+
+        <div class="form-group">
+            <label for="fullname">Full Name</label>
+            <input type="text" id="fullname" placeholder="varun kumar">
+            <span class="error-msg" id="nameError"></span>
+        </div>
+
+        <div class="form-group">
+            <label for="email">Email Address</label>
+            <input type="email" id="email" placeholder="user@example.com">
+            <span class="error-msg" id="emailError"></span>
+        </div>
+
+        <div class="form-group">
+            <label for="age">Age</label>
+            <input type="number" id="age" placeholder="Age">
+            <span class="error-msg" id="ageError"></span>
+        </div>
+
+        <div class="form-group" id="skillsContainer">
+            <label for="skills">Skills (Comma separated)</label>
+            <input type="text" id="skills" placeholder="HTML, CSS, JavaScript">
+            <span class="error-msg" id="skillsError"></span>
+        </div>
+
+        <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" id="password" placeholder="Create a password">
+            <small class="hint" id="passHint">Strength: Unknown</small>
+            <span class="error-msg" id="passError"></span>
+        </div>
+
+        <div class="form-group">
+            <label for="confirmPass">Confirm Password</label>
+            <input type="password" id="confirmPass" placeholder="Repeat password">
+            <span class="error-msg" id="confirmError"></span>
+        </div>
+
+        <button type="submit" id="submitBtn" disabled>Register Account</button>
+    </form>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const form = document.getElementById('regForm');
+    const roleSelect = document.getElementById('role');
+    const skillsContainer = document.getElementById('skillsContainer');
+    const submitBtn = document.getElementById('submitBtn');
+    
+    const inputs = {
+        fullname: document.getElementById('fullname'),
+        email: document.getElementById('email'),
+        age: document.getElementById('age'),
+        skills: document.getElementById('skills'),
+        password: document.getElementById('password'),
+        confirmPass: document.getElementById('confirmPass')
+    };
+
+    const roleRules = {
+        student: {
+            minAge: 16,
+            emailDomain: '.edu',
+            passStrength: 'medium',
+            showSkills: true
+        },
+        teacher: {
+            minAge: 21,
+            emailDomain: '.org',
+            passStrength: 'strong',
+            showSkills: true
+        },
+        admin: {
+            minAge: 18,
+            emailDomain: null,
+            passStrength: 'very-strong',
+            showSkills: false
+        }
+    };
+
+    let currentRole = null;
+
+    const setStatus = (input, isValid, msg = '') => {
+        const errorSpan = document.getElementById(input.id + 'Error');
+        
+        if (isValid) {
+            input.classList.remove('invalid');
+            input.classList.add('valid');
+            if(errorSpan) errorSpan.innerText = '';
+        } else {
+            input.classList.remove('valid');
+            input.classList.add('invalid');
+            if(errorSpan) errorSpan.innerText = msg;
+        }
+        checkFormValidity();
+    };
+
+    const validateEmail = () => {
+        const email = inputs.email.value;
+        const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        
+        if (!regex.test(email)) {
+            setStatus(inputs.email, false, 'Invalid email format');
+            return false;
+        }
+
+        if (currentRole && roleRules[currentRole].emailDomain) {
+            const requiredDomain = roleRules[currentRole].emailDomain;
+            if (!email.endsWith(requiredDomain)) {
+                setStatus(inputs.email, false, `Must use a ${requiredDomain} email`);
+                return false;
+            }
+        }
+        
+        setStatus(inputs.email, true);
+        return true;
+    };
+
+    const validatePassword = () => {
+        const pass = inputs.password.value;
+        const hint = document.getElementById('passHint');
+        
+        if (!currentRole) {
+            setStatus(inputs.password, false, 'Select a role first');
+            return false;
+        }
+
+        let isValid = false;
+        let msg = '';
+        let strengthTxt = 'Weak';
+
+        const requirement = roleRules[currentRole].passStrength;
+
+        if (requirement === 'medium') {
+            isValid = pass.length >= 6;
+            msg = 'Min 6 chars required';
+            if(isValid) strengthTxt = 'Medium';
+        } else if (requirement === 'strong') {
+            isValid = pass.length >= 8 && /\d/.test(pass);
+            msg = 'Min 8 chars & 1 number';
+            if(isValid) strengthTxt = 'Strong';
+        } else if (requirement === 'very-strong') {
+            isValid = pass.length >= 10 && /[!@#$%^&*]/.test(pass);
+            msg = 'Min 10 chars & 1 symbol';
+            if(isValid) strengthTxt = 'Very Strong';
+        }
+
+        hint.innerText = `Strength: ${strengthTxt}`;
+        setStatus(inputs.password, isValid, msg);
+        
+        if (inputs.confirmPass.value) validateConfirm();
+        
+        return isValid;
+    };
+
+    const validateConfirm = () => {
+        const match = inputs.password.value === inputs.confirmPass.value && inputs.password.value !== '';
+        setStatus(inputs.confirmPass, match, match ? '' : 'Passwords do not match');
+        return match;
+    };
+
+    const validateAge = () => {
+        if(!currentRole) return false;
+        const age = parseInt(inputs.age.value);
+        const minAge = roleRules[currentRole].minAge;
+        
+        if (!age || age < minAge) {
+            setStatus(inputs.age, false, `Minimum age is ${minAge}`);
+            return false;
+        }
+        setStatus(inputs.age, true);
+        return true;
+    };
+
+    const validateGeneric = (input) => {
+        const isValid = input.value.trim().length > 0;
+        setStatus(input, isValid, 'Field required');
+        return isValid;
+    };
+
+    const checkFormValidity = () => {
+        let isValid = true;
+        
+        if (!currentRole) isValid = false;
+        if (!validateEmail()) isValid = false;
+        if (!validatePassword()) isValid = false;
+        if (!validateConfirm()) isValid = false;
+        if (!validateAge()) isValid = false;
+        if (!validateGeneric(inputs.fullname)) isValid = false;
+        
+        if (!skillsContainer.classList.contains('hidden')) {
+             if (!validateGeneric(inputs.skills)) isValid = false;
+        }
+
+        submitBtn.disabled = !isValid;
+    };
+
+    roleSelect.addEventListener('change', (e) => {
+        currentRole = e.target.value;
+        const rules = roleRules[currentRole];
+
+        document.getElementById('roleHint').innerText = 
+            `Req: Age ${rules.minAge}+, Pass: ${rules.passStrength}`;
+
+        if (rules.showSkills) {
+            skillsContainer.classList.remove('hidden');
+        } else {
+            skillsContainer.classList.add('hidden');
+            inputs.skills.value = '';
+            setStatus(inputs.skills, true);
+        }
+
+        if(inputs.email.value) validateEmail();
+        if(inputs.age.value) validateAge();
+        if(inputs.password.value) validatePassword();
+    });
+
+    inputs.fullname.addEventListener('input', () => validateGeneric(inputs.fullname));
+    inputs.email.addEventListener('input', validateEmail);
+    inputs.age.addEventListener('input', validateAge);
+    inputs.skills.addEventListener('input', () => validateGeneric(inputs.skills));
+    inputs.password.addEventListener('input', validatePassword);
+    inputs.confirmPass.addEventListener('input', validateConfirm);
+
+    form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        alert('Form Submitted Successfully!');
+    });
+});
+</script>
+</body>
+</html>

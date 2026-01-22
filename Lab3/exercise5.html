@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multi-Stage Form Workflow</title>
+    <style>
+        :root {
+            --bg: #f8fafc;
+            --card: #ffffff;
+            --text: #334155;
+            --primary: #475569;
+            --accent: #0f172a;
+            --border: #e2e8f0;
+            --error: #dc2626;
+            --success: #16a34a;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            background: var(--card);
+            width: 500px;
+            padding: 2.5rem;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            border: 1px solid var(--border);
+        }
+
+        .progress-container {
+            margin-bottom: 2rem;
+        }
+
+        .progress-bar-bg {
+            background-color: var(--border);
+            height: 8px;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-bar-fill {
+            background-color: var(--accent);
+            height: 100%;
+            width: 25%;
+            transition: width 0.3s ease;
+        }
+
+        .step-indicator {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 8px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        h2 {
+            margin-top: 0;
+            color: var(--accent);
+            margin-bottom: 1.5rem;
+        }
+
+        .form-stage {
+            display: none;
+            animation: fadeIn 0.4s;
+        }
+
+        .form-stage.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .form-group {
+            margin-bottom: 1.2rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.4rem;
+            font-weight: 500;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid var(--border);
+            border-radius: 6px;
+            font-size: 1rem;
+            color: var(--accent);
+            box-sizing: border-box; 
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        input.invalid {
+            border-color: var(--accent); 
+            border-bottom-color: var(--error);
+        }
+
+        .error-txt {
+            color: var(--error);
+            font-size: 0.8rem;
+            height: 1.2em;
+            margin-top: 4px;
+        }
+
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 2rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border);
+        }
+
+        button {
+            padding: 10px 24px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 1rem;
+        }
+
+        .btn-prev {
+            background: transparent;
+            border: 2px solid var(--border);
+            color: var(--primary);
+        }
+
+        .btn-prev:hover {
+            border-color: var(--primary);
+            color: var(--accent);
+        }
+
+        .btn-prev:disabled {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .btn-next {
+            background: var(--accent);
+            border: none;
+            color: white;
+        }
+
+        .btn-next:hover {
+            opacity: 0.9;
+        }
+
+        .review-item {
+            margin-bottom: 10px;
+            border-bottom: 1px solid var(--bg);
+            padding-bottom: 10px;
+        }
+        
+        .review-label {
+            font-weight: bold;
+            font-size: 0.85rem;
+            color: var(--primary);
+            display: block;
+        }
+        
+        .review-value {
+            font-size: 1.1rem;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="progress-container">
+        <div class="progress-bar-bg">
+            <div class="progress-bar-fill" id="progressBar"></div>
+        </div>
+        <div class="step-indicator">
+            <span id="stepText">Step 1 of 4</span>
+            <span id="stepLabel">Account Setup</span>
+        </div>
+    </div>
+
+    <form id="multiStepForm">
+        
+        <div class="form-stage active" id="stage1">
+            <h2>Account Details</h2>
+            <div class="form-group">
+                <label>Username</label>
+                <input type="text" id="username" placeholder="varun">
+                <div class="error-txt" id="err-username"></div>
+            </div>
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" id="password" placeholder="Min 6 chars">
+                <div class="error-txt" id="err-password"></div>
+            </div>
+            <div class="form-group">
+                <label>Confirm Password</label>
+                <input type="password" id="confirmPass" placeholder="Repeat password">
+                <div class="error-txt" id="err-confirmPass"></div>
+            </div>
+        </div>
+
+        <div class="form-stage" id="stage2">
+            <h2>Personal Information</h2>
+            <div class="form-group">
+                <label>Full Name</label>
+                <input type="text" id="fullname" placeholder="Varun Kumar">
+                <div class="error-txt" id="err-fullname"></div>
+            </div>
+            <div class="form-group">
+                <label>Email Address</label>
+                <input type="email" id="email" placeholder="varun@example.com">
+                <div class="error-txt" id="err-email"></div>
+            </div>
+            <div class="form-group">
+                <label>Phone Number</label>
+                <input type="tel" id="phone" placeholder="123-456-7890">
+                <div class="error-txt" id="err-phone"></div>
+            </div>
+        </div>
+
+        <div class="form-stage" id="stage3">
+            <h2>Professional Profile</h2>
+            <div class="form-group">
+                <label>Job Title</label>
+                <input type="text" id="jobTitle" placeholder="Software Engineer">
+                <div class="error-txt" id="err-jobTitle"></div>
+            </div>
+            <div class="form-group">
+                <label>Company</label>
+                <input type="text" id="company" placeholder="Tech Corp">
+                <div class="error-txt" id="err-company"></div>
+            </div>
+            <div class="form-group">
+                <label>Years of Experience</label>
+                <input type="number" id="experience" placeholder="5">
+                <div class="error-txt" id="err-experience"></div>
+            </div>
+        </div>
+
+        <div class="form-stage" id="stage4">
+            <h2>Review & Submit</h2>
+            <div id="reviewContainer"></div>
+            <p style="font-size: 0.9rem; color: #64748b; margin-top: 20px;">
+                Please verify your information before submitting.
+            </p>
+        </div>
+
+        <div class="nav-buttons">
+            <button type="button" class="btn-prev" id="prevBtn" disabled>Back</button>
+            <button type="button" class="btn-next" id="nextBtn">Next Step</button>
+        </div>
+    </form>
+</div>
+
+<script>
+    let currentStage = 1;
+    const totalStages = 4;
+    
+    const formData = {
+        username: '',
+        password: '',
+        fullname: '',
+        email: '',
+        phone: '',
+        jobTitle: '',
+        company: '',
+        experience: ''
+    };
+
+    const DOM = {
+        progressFill: document.getElementById('progressBar'),
+        stepText: document.getElementById('stepText'),
+        stepLabel: document.getElementById('stepLabel'),
+        prevBtn: document.getElementById('prevBtn'),
+        nextBtn: document.getElementById('nextBtn'),
+        reviewContainer: document.getElementById('reviewContainer'),
+        form: document.getElementById('multiStepForm')
+    };
+
+    const stageLabels = [
+        "Account Setup",
+        "Personal Info",
+        "Professional Profile",
+        "Review Data"
+    ];
+
+    function updateUI() {
+        document.querySelectorAll('.form-stage').forEach(el => el.classList.remove('active'));
+        document.getElementById(`stage${currentStage}`).classList.add('active');
+
+        const progressPercent = ((currentStage) / totalStages) * 100;
+        DOM.progressFill.style.width = `${progressPercent}%`;
+        
+        DOM.stepText.innerText = `Step ${currentStage} of ${totalStages}`;
+        DOM.stepLabel.innerText = stageLabels[currentStage - 1];
+
+        DOM.prevBtn.disabled = currentStage === 1;
+
+        if (currentStage === totalStages) {
+            DOM.nextBtn.innerText = "Submit Application";
+            DOM.nextBtn.style.backgroundColor = "#16a34a"; 
+            populateReview();
+        } else {
+            DOM.nextBtn.innerText = "Next Step";
+            DOM.nextBtn.style.backgroundColor = ""; 
+        }
+    }
+
+    function setError(id, msg) {
+        const input = document.getElementById(id);
+        const errDiv = document.getElementById(`err-${id}`);
+        if (input) {
+            input.classList.add('invalid');
+        }
+        if (errDiv) {
+            errDiv.innerText = msg;
+        }
+    }
+
+    function clearErrors() {
+        document.querySelectorAll('.error-txt').forEach(el => el.innerText = '');
+        document.querySelectorAll('input').forEach(el => el.classList.remove('invalid'));
+    }
+
+    function validateStage(stage) {
+        clearErrors();
+        let isValid = true;
+
+        if (stage === 1) {
+            const user = document.getElementById('username').value.trim();
+            const pass = document.getElementById('password').value;
+            const confirm = document.getElementById('confirmPass').value;
+
+            if (user.length < 3) { setError('username', 'Min 3 chars required'); isValid = false; }
+            if (pass.length < 6) { setError('password', 'Min 6 chars required'); isValid = false; }
+            if (pass !== confirm) { setError('confirmPass', 'Passwords do not match'); isValid = false; }
+            
+            if(isValid) {
+                formData.username = user;
+                formData.password = pass;
+            }
+        }
+
+        if (stage === 2) {
+            const name = document.getElementById('fullname').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const phone = document.getElementById('phone').value.trim();
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+            if (name === '') { setError('fullname', 'Name is required'); isValid = false; }
+            if (!emailRegex.test(email)) { setError('email', 'Invalid email format'); isValid = false; }
+            if (phone.length < 10) { setError('phone', 'Invalid phone number'); isValid = false; }
+
+            if(isValid) {
+                formData.fullname = name;
+                formData.email = email;
+                formData.phone = phone;
+            }
+        }
+
+        if (stage === 3) {
+            const job = document.getElementById('jobTitle').value.trim();
+            const company = document.getElementById('company').value.trim();
+            const exp = document.getElementById('experience').value;
+
+            if (job === '') { setError('jobTitle', 'Job Title required'); isValid = false; }
+            if (company === '') { setError('company', 'Company required'); isValid = false; }
+            if (exp === '' || exp < 0) { setError('experience', 'Valid experience required'); isValid = false; }
+
+            if(isValid) {
+                formData.jobTitle = job;
+                formData.company = company;
+                formData.experience = exp;
+            }
+        }
+
+        return isValid;
+    }
+
+    function populateReview() {
+        DOM.reviewContainer.innerHTML = `
+            <div class="review-item">
+                <span class="review-label">Username</span>
+                <span class="review-value">${formData.username}</span>
+            </div>
+            <div class="review-item">
+                <span class="review-label">Full Name</span>
+                <span class="review-value">${formData.fullname}</span>
+            </div>
+            <div class="review-item">
+                <span class="review-label">Email</span>
+                <span class="review-value">${formData.email}</span>
+            </div>
+            <div class="review-item">
+                <span class="review-label">Current Role</span>
+                <span class="review-value">${formData.jobTitle} at ${formData.company}</span>
+            </div>
+        `;
+    }
+
+    DOM.nextBtn.addEventListener('click', () => {
+        if (currentStage === totalStages) {
+            alert('Form Submitted Successfully!');
+            console.log(formData);
+            location.reload();
+            return;
+        }
+
+        if (validateStage(currentStage)) {
+            currentStage++;
+            updateUI();
+        }
+    });
+
+    DOM.prevBtn.addEventListener('click', () => {
+        if (currentStage > 1) {
+            currentStage--;
+            updateUI();
+        }
+    });
+
+    updateUI();
+</script>
+
+</body>
+</html>
