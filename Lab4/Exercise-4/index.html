@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather</title>
+    <style>
+        :root {
+            --black: #000000;
+            --white: #ffffff;
+            --grey: #f0f0f0;
+            --text-muted: #888888;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--white);
+            color: var(--black);
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .dash {
+            width: 100%;
+            max-width: 400px;
+            padding: 40px;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            margin-bottom: 50px;
+        }
+
+        .search-box {
+            position: relative;
+            margin-bottom: 40px;
+        }
+
+        input {
+            width: 100%;
+            padding: 15px 0;
+            border: none;
+            border-bottom: 2px solid var(--black);
+            font-size: 20px;
+            outline: none;
+            text-align: center;
+            text-transform: uppercase;
+        }
+
+        .loader {
+            height: 2px;
+            width: 0%;
+            background: var(--black);
+            position: absolute;
+            bottom: -2px;
+            transition: width 0.3s ease;
+        }
+
+        #weatherDisplay {
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        .temp {
+            font-size: 80px;
+            font-weight: 800;
+            margin: 20px 0;
+            letter-spacing: -4px;
+        }
+
+        .condition {
+            text-transform: uppercase;
+            font-size: 14px;
+            letter-spacing: 2px;
+            margin-bottom: 20px;
+        }
+
+        .meta {
+            display: flex;
+            justify-content: space-around;
+            border-top: 1px solid var(--grey);
+            padding-top: 20px;
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .error {
+            color: var(--black);
+            font-size: 13px;
+            margin-top: 10px;
+            text-transform: uppercase;
+        }
+    </style>
+</head>
+<body>
+
+<div class="dash">
+    <h1>Atmosphere</h1>
+    
+    <div class="search-box">
+        <input type="text" id="cityInput" placeholder="Enter City..." spellcheck="false">
+        <div class="loader" id="loader"></div>
+        <div id="errorMsg" class="error"></div>
+    </div>
+
+    <div id="weatherDisplay">
+        <div class="condition" id="desc">Clear Sky</div>
+        <div class="temp"><span id="tempVal">0</span>°</div>
+        <div class="meta">
+            <div>HUMIDITY <br><strong id="humVal" style="color:var(--black)">0%</strong></div>
+            <div>CACHED <br><strong id="cacheCity" style="color:var(--black)">NONE</strong></div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const API_KEY = '228ad82095a6c489ae2197f3e885f563'; 
+    const input = document.getElementById('cityInput');
+    const loader = document.getElementById('loader');
+    const display = document.getElementById('weatherDisplay');
+    const errorMsg = document.getElementById('errorMsg');
+
+    let lastSearchedCity = null;
+    let debounceTimer;
+
+    input.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            const city = input.value.trim();
+            if (city) fetchWeather(city);
+        }
+    });
+
+    async function fetchWeather(city) {
+        errorMsg.textContent = "";
+        loader.style.width = "40%";
+        
+        try {
+            const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=${API_KEY}`;
+            const response = await fetch(url);
+            
+            if (response.status === 404) throw new Error("City not found");
+            if (!response.ok) throw new Error("Network error");
+
+            const data = await response.json();
+            
+            lastSearchedCity = data.name;
+            updateUI(data);
+
+        } catch (err) {
+            display.style.opacity = "0";
+            errorMsg.textContent = err.message;
+        } finally {
+            loader.style.width = "100%";
+            setTimeout(() => loader.style.width = "0%", 400);
+        }
+    }
+
+    function updateUI(data) {
+        document.getElementById('tempVal').textContent = Math.round(data.main.temp);
+        document.getElementById('desc').textContent = data.weather[0].description;
+        document.getElementById('humVal').textContent = data.main.humidity + "%";
+        document.getElementById('cacheCity').textContent = lastSearchedCity;
+        
+        display.style.opacity = "1";
+    }
+</script>
+
+</body>
+</html>

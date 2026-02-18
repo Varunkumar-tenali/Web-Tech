@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Management System</title>
+    <style>
+        :root {
+            --bg: #ffffff;
+            --surface: #fafafa;
+            --primary: #000000;
+            --border: #e0e0e0;
+            --text-secondary: #707070;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--primary);
+            margin: 0;
+            padding: 40px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .wrapper { width: 100%; max-width: 900px; }
+
+        h1 { font-size: 1.2rem; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 30px; }
+
+        .form-card {
+            background: var(--surface);
+            padding: 24px;
+            border: 1px solid var(--border);
+            margin-bottom: 40px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            align-items: end;
+        }
+
+        .input-group label { display: block; font-size: 11px; font-weight: 700; text-transform: uppercase; margin-bottom: 5px; }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--border);
+            background: white;
+            box-sizing: border-box;
+            outline: none;
+        }
+
+        input:focus { border-color: var(--primary); }
+
+        button {
+            padding: 10px 20px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 11px;
+        }
+
+        #msg { height: 20px; font-size: 12px; margin-bottom: 10px; font-weight: 600; }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th {
+            text-align: left;
+            font-size: 11px;
+            text-transform: uppercase;
+            color: var(--text-secondary);
+            border-bottom: 2px solid var(--primary);
+            padding: 10px;
+        }
+
+        td {
+            padding: 15px 10px;
+            border-bottom: 1px solid var(--border);
+            font-size: 14px;
+        }
+
+        .actions button {
+            background: none;
+            color: var(--primary);
+            border: 1px solid var(--border);
+            margin-right: 5px;
+            padding: 5px 10px;
+        }
+
+        .actions button:hover { background: var(--primary); color: white; }
+
+        .btn-delete:hover { background: #000 !important; }
+    </style>
+</head>
+<body>
+
+<div class="wrapper">
+    <h1>SMS / Registry</h1>
+    
+    <div id="msg"></div>
+
+    <form id="studentForm" class="form-card">
+        <input type="hidden" id="editIndex" value="-1">
+        <div class="input-group">
+            <label>ID</label>
+            <input type="text" id="sid" required>
+        </div>
+        <div class="input-group">
+            <label>Name</label>
+            <input type="text" id="sname" required>
+        </div>
+        <div class="input-group">
+            <label>Dept</label>
+            <input type="text" id="sdept" required>
+        </div>
+        <div class="input-group">
+            <label>Marks</label>
+            <input type="number" id="smarks" required>
+        </div>
+        <button type="submit" id="submitBtn">Add Student</button>
+    </form>
+
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Department</th>
+                <th>Marks</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody id="studentTable"></tbody>
+    </table>
+</div>
+
+<script>
+    let students = [];
+    const form = document.getElementById('studentForm');
+    const tableBody = document.getElementById('studentTable');
+    const msg = document.getElementById('msg');
+
+    async function apiRequest(method, data = null, id = null) {
+        try {
+            if (method === 'GET') {
+                return { status: 200, data: students };
+            }
+            
+            if (method === 'POST') {
+                students.push(data);
+                return { status: 201, message: "Student added successfully" };
+            }
+
+            if (method === 'PUT') {
+                const index = students.findIndex(s => s.sid === id);
+                if (index === -1) return { status: 404, message: "Student not found" };
+                students[index] = data;
+                return { status: 200, message: "Record updated" };
+            }
+
+            if (method === 'DELETE') {
+                students = students.filter(s => s.sid !== id);
+                return { status: 200, message: "Record removed" };
+            }
+        } catch (e) {
+            return { status: 500, message: "Server error" };
+        }
+    }
+
+    async function loadTable() {
+        const res = await apiRequest('GET');
+        tableBody.innerHTML = '';
+        res.data.forEach(s => {
+            const row = `<tr>
+                <td>${s.sid}</td>
+                <td>${s.sname}</td>
+                <td>${s.sdept}</td>
+                <td>${s.smarks}</td>
+                <td class="actions">
+                    <button onclick="editStudent('${s.sid}')">Edit</button>
+                    <button class="btn-delete" onclick="deleteStudent('${s.sid}')">Delete</button>
+                </td>
+            </tr>`;
+            tableBody.insertAdjacentHTML('beforeend', row);
+        });
+    }
+
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const studentData = {
+            sid: document.getElementById('sid').value,
+            sname: document.getElementById('sname').value,
+            sdept: document.getElementById('sdept').value,
+            smarks: document.getElementById('smarks').value
+        };
+
+        const editIndex = document.getElementById('editIndex').value;
+        let res;
+
+        if (editIndex === "-1") {
+            res = await apiRequest('POST', studentData);
+        } else {
+            res = await apiRequest('PUT', studentData, editIndex);
+            document.getElementById('editIndex').value = "-1";
+            document.getElementById('submitBtn').textContent = "Add Student";
+        }
+
+        showMessage(res.message, res.status);
+        form.reset();
+        loadTable();
+    });
+
+    async function deleteStudent(id) {
+        const res = await apiRequest('DELETE', null, id);
+        showMessage(res.message, res.status);
+        loadTable();
+    }
+
+    function editStudent(id) {
+        const s = students.find(item => item.sid === id);
+        document.getElementById('sid').value = s.sid;
+        document.getElementById('sname').value = s.sname;
+        document.getElementById('sdept').value = s.sdept;
+        document.getElementById('smarks').value = s.smarks;
+        document.getElementById('editIndex').value = s.sid;
+        document.getElementById('submitBtn').textContent = "Update Student";
+    }
+
+    function showMessage(text, status) {
+        msg.textContent = text;
+        msg.style.color = status >= 400 ? "black" : "#707070";
+        setTimeout(() => msg.textContent = "", 3000);
+    }
+
+    loadTable();
+</script>
+
+</body>
+</html>
