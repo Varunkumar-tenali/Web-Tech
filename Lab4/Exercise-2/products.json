@@ -1,0 +1,7 @@
+[
+  { "name": "Minimalist Watch", "price": "$120", "category": "Accessories" },
+  { "name": "Cotton Tote", "price": "$25", "category": "Bags" },
+  { "name": "Leather Journal", "price": "$45", "category": "Stationery" },
+  { "name": "Ceramic Mug", "price": "$18", "category": "Kitchen" },
+  { "name": "Casio", "price": "$30", "category": "Apparel" }
+]
