@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Inventory System</title>
+    <style>
+        :root {
+            --primary: #065f46;
+            --primary-light: #059669;
+            --bg-color: #ecfdf5;
+            --surface: #ffffff;
+            --text-main: #064e3b;
+            --text-muted: #34d399;
+            --danger: #ef4444;
+            --warning-bg: #fef2f2;
+            --warning-text: #991b1b;
+            --border: #d1fae5;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            padding: 30px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .dashboard {
+            width: 100%;
+            max-width: 1100px;
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 20px;
+        }
+
+        .panel {
+            background: var(--surface);
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            height: fit-content;
+        }
+
+        .header {
+            grid-column: 1 / -1;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        h1 {
+            margin: 0;
+            color: var(--primary);
+        }
+
+        .stats-card {
+            background: var(--primary);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 8px;
+            text-align: right;
+        }
+
+        .stats-label {
+            font-size: 0.85rem;
+            opacity: 0.9;
+        }
+
+        .stats-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: var(--primary-light);
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            box-sizing: border-box; 
+        }
+
+        input:focus {
+            outline: 2px solid var(--primary-light);
+            border-color: transparent;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: opacity 0.2s;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .btn-danger {
+            background-color: var(--danger);
+            color: white;
+            width: auto;
+            padding: 5px 10px;
+            font-size: 0.8rem;
+        }
+
+        .btn-edit {
+            background-color: var(--primary-light);
+            color: white;
+            width: auto;
+            padding: 5px 10px;
+            font-size: 0.8rem;
+            margin-right: 5px;
+        }
+
+        .search-bar {
+            margin-bottom: 20px;
+            display: flex;
+            gap: 10px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.95rem;
+        }
+
+        thead {
+            background-color: var(--bg-color);
+            border-bottom: 2px solid var(--primary);
+        }
+
+        th, td {
+            text-align: left;
+            padding: 12px;
+        }
+
+        td {
+            border-bottom: 1px solid var(--border);
+        }
+
+        .low-stock {
+            background-color: var(--warning-bg);
+            color: var(--warning-text);
+            font-weight: 600;
+        }
+
+        .msg-box {
+            padding: 10px;
+            margin-bottom: 15px;
+            border-radius: 4px;
+            display: none;
+            text-align: center;
+            font-size: 0.9rem;
+        }
+
+        .error {
+            background-color: #fee2e2;
+            color: #b91c1c;
+        }
+
+        @media (max-width: 768px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="dashboard">
+        <div class="header">
+            <div>
+                <h1>Inventory Manager</h1>
+                <p>Track stock and value</p>
+            </div>
+            <div class="stats-card">
+                <div class="stats-label">Total Inventory Value</div>
+                <div class="stats-value" id="totalValue">$0.00</div>
+            </div>
+        </div>
+
+        <div class="panel">
+            <h3 style="margin-top:0">Manage Product</h3>
+            <div id="msgBox" class="msg-box"></div>
+            
+            <input type="hidden" id="productId">
+            
+            <div class="form-group">
+                <label>Product ID</label>
+                <input type="text" id="pId" placeholder="e.g. P105">
+            </div>
+            
+            <div class="form-group">
+                <label>Name</label>
+                <input type="text" id="pName" placeholder="Product Name">
+            </div>
+
+            <div class="form-group">
+                <label>Category</label>
+                <input type="text" id="pCat" placeholder="Category">
+            </div>
+
+            <div class="form-group">
+                <label>Price ($)</label>
+                <input type="number" id="pPrice" step="0.01" placeholder="0.00">
+            </div>
+
+            <div class="form-group">
+                <label>Stock Qty</label>
+                <input type="number" id="pStock" placeholder="0">
+            </div>
+
+            <button id="saveBtn" class="btn-primary" onclick="saveProduct()">Add Product</button>
+            <button id="cancelBtn" onclick="resetForm()" style="margin-top:10px; background:#ddd; display:none;">Cancel</button>
+        </div>
+
+        <div class="panel">
+            <div class="search-bar">
+                <input type="text" id="searchBox" placeholder="Search by Category..." onkeyup="filterProducts()">
+            </div>
+            
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Category</th>
+                        <th>Price</th>
+                        <th>Stock</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody">
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        let inventory = [];
+        let isEditing = false;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            fetchData();
+        });
+
+        function fetchData() {
+            fetch('inventory.json')
+                .then(res => res.json())
+                .then(data => {
+                    inventory = data;
+                    renderTable(inventory);
+                    updateTotalValue();
+                })
+                .catch(err => showError("Error loading inventory data"));
+        }
+
+        function showError(msg) {
+            const box = document.getElementById('msgBox');
+            box.textContent = msg;
+            box.className = 'msg-box error';
+            box.style.display = 'block';
+            setTimeout(() => box.style.display = 'none', 3000);
+        }
+
+        function renderTable(data) {
+            const tbody = document.getElementById('tableBody');
+            tbody.innerHTML = '';
+
+            if (data.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align:center">No products found</td></tr>';
+                return;
+            }
+
+            data.forEach(item => {
+                const tr = document.createElement('tr');
+                if (item.stock < 10) {
+                    tr.classList.add('low-stock');
+                }
+
+                tr.innerHTML = `
+                    <td>${item.id}</td>
+                    <td>${item.name}</td>
+                    <td>${item.category}</td>
+                    <td>$${parseFloat(item.price).toFixed(2)}</td>
+                    <td>${item.stock} ${item.stock < 10 ? '(Low)' : ''}</td>
+                    <td>
+                        <button class="btn-edit" onclick="editProduct('${item.id}')">Edit</button>
+                        <button class="btn-danger" onclick="deleteProduct('${item.id}')">Del</button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function updateTotalValue() {
+            const total = inventory.reduce((sum, item) => sum + (item.price * item.stock), 0);
+            document.getElementById('totalValue').textContent = '$' + total.toFixed(2);
+        }
+
+        function saveProduct() {
+            const id = document.getElementById('pId').value.trim();
+            const name = document.getElementById('pName').value.trim();
+            const cat = document.getElementById('pCat').value.trim();
+            const price = parseFloat(document.getElementById('pPrice').value);
+            const stock = parseInt(document.getElementById('pStock').value);
+
+            if (!id || !name || !cat || isNaN(price) || isNaN(stock)) {
+                showError("Please fill all fields correctly");
+                return;
+            }
+
+            if (price < 0 || stock < 0) {
+                showError("Price and Stock cannot be negative");
+                return;
+            }
+
+            if (isEditing) {
+                const idx = inventory.findIndex(p => p.id === id);
+                if (idx > -1) {
+                    inventory[idx] = { id, name, category: cat, price, stock };
+                }
+            } else {
+                if (inventory.some(p => p.id === id)) {
+                    showError("Product ID already exists");
+                    return;
+                }
+                inventory.push({ id, name, category: cat, price, stock });
+            }
+
+            renderTable(inventory);
+            updateTotalValue();
+            resetForm();
+        }
+
+        function editProduct(id) {
+            const product = inventory.find(p => p.id === id);
+            if (product) {
+                document.getElementById('pId').value = product.id;
+                document.getElementById('pName').value = product.name;
+                document.getElementById('pCat').value = product.category;
+                document.getElementById('pPrice').value = product.price;
+                document.getElementById('pStock').value = product.stock;
+
+                document.getElementById('pId').disabled = true;
+                document.getElementById('saveBtn').textContent = "Update Product";
+                document.getElementById('cancelBtn').style.display = "inline-block";
+                
+                isEditing = true;
+            }
+        }
+
+        function deleteProduct(id) {
+            if (confirm("Delete this product?")) {
+                inventory = inventory.filter(p => p.id !== id);
+                renderTable(inventory);
+                updateTotalValue();
+            }
+        }
+
+        function filterProducts() {
+            const term = document.getElementById('searchBox').value.toLowerCase();
+            const filtered = inventory.filter(p => 
+                p.category.toLowerCase().includes(term)
+            );
+            renderTable(filtered);
+        }
+
+        function resetForm() {
+            document.getElementById('pId').value = '';
+            document.getElementById('pName').value = '';
+            document.getElementById('pCat').value = '';
+            document.getElementById('pPrice').value = '';
+            document.getElementById('pStock').value = '';
+            
+            document.getElementById('pId').disabled = false;
+            document.getElementById('saveBtn').textContent = "Add Product";
+            document.getElementById('cancelBtn').style.display = "none";
+            isEditing = false;
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,20 @@
+[
+    {
+        "id": "ST001",
+        "name": "Siva",
+        "course": "Computer Science",
+        "marks": 88
+    },
+    {
+        "id": "ST002",
+        "name": "Varun",
+        "course": "Mathematics",
+        "marks": 76
+    },
+    {
+        "id": "ST003",
+        "name": "Pavan",
+        "course": "Physics",
+        "marks": 92
+    }
+]
