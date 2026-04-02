@@ -1,0 +1,192 @@
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --bg:          #0c0c0b;
+  --surface:     #141413;
+  --surface-2:   #1b1b19;
+  --border:      #272725;
+  --border-soft: #1f1f1d;
+  --text-bright: #f2f0eb;
+  --text-mid:    #8a8880;
+  --text-dim:    #46443f;
+  --accent:      #f2f0eb;
+}
+
+body {
+  background: var(--bg);
+  min-height: 100vh;
+  font-family: 'Jost', sans-serif;
+  color: var(--text-bright);
+}
+
+.wrapper {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 16px;
+}
+
+.card {
+  width: 100%;
+  max-width: 520px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  overflow: hidden;
+  animation: rise 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.card-top {
+  position: relative;
+  background: var(--surface-2);
+  border-bottom: 1px solid var(--border);
+  padding: 40px 40px 32px;
+}
+
+.card-top::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 40px;
+  width: 48px;
+  height: 2px;
+  background: var(--accent);
+}
+
+.badge {
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-bottom: 20px;
+}
+
+.avatar-row {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.avatar {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: var(--border);
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.avatar-initials {
+  font-family: 'Libre Baskerville', serif;
+  font-size: 22px;
+  font-weight: 400;
+  color: var(--text-mid);
+  letter-spacing: -0.02em;
+}
+
+.name-block {}
+
+.student-name {
+  font-family: 'Libre Baskerville', serif;
+  font-size: 26px;
+  font-weight: 400;
+  color: var(--text-bright);
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+}
+
+.student-id {
+  font-size: 12px;
+  color: var(--text-dim);
+  font-weight: 300;
+  margin-top: 4px;
+  letter-spacing: 0.04em;
+}
+
+.details-grid {
+  padding: 32px 40px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1px;
+  background: var(--border-soft);
+}
+
+.detail-cell {
+  background: var(--surface);
+  padding: 20px 0;
+  animation: fadeIn 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.detail-cell:nth-child(odd)  { padding-right: 24px; }
+.detail-cell:nth-child(even) { padding-left: 24px; }
+
+.detail-cell:nth-child(1) { animation-delay: 0.1s; }
+.detail-cell:nth-child(2) { animation-delay: 0.15s; }
+.detail-cell:nth-child(3) { animation-delay: 0.2s; }
+.detail-cell:nth-child(4) { animation-delay: 0.25s; }
+
+.detail-label {
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-bottom: 6px;
+}
+
+.detail-value {
+  font-family: 'Libre Baskerville', serif;
+  font-size: 16px;
+  font-weight: 400;
+  color: var(--text-bright);
+  letter-spacing: -0.01em;
+}
+
+.card-footer {
+  border-top: 1px solid var(--border);
+  padding: 16px 40px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.footer-left {
+  font-size: 11px;
+  color: var(--text-dim);
+  font-weight: 300;
+  letter-spacing: 0.04em;
+}
+
+.status-dot {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 11px;
+  color: var(--text-mid);
+  letter-spacing: 0.06em;
+}
+
+.dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #5a5a52;
+}
+
+@keyframes rise {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
